@@ -1,4 +1,4 @@
-#$Id: Associate.pm,v 1.9 2003/08/02 03:01:55 alex Exp $
+#$Id: Associate.pm,v 1.10 2003/08/04 03:01:55 alex Exp $
 
 package HTML::Template::Associate;
 use strict;
@@ -6,7 +6,7 @@ use strict;
 BEGIN {
 	use Exporter ();
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = qw ( $Revision: 1.9 $ )[1];
+	$VERSION     = qw ( $Revision: 1.10 $ )[1];
 	@ISA         = qw (Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();
@@ -27,10 +27,10 @@ HTML::Template::Associate
 
 =head1 SYNOPSIS
 
-  #Example usage with CGI and FormValidator as the target
+  #Example usage with CGI and FormValidator as the target 
 
   use CGI qw/:standard/;
-  use HTML::FormValidator;
+  use Data::FormValidator;
   use HTML::Template;
   use HTML::Template::Associate;
 
@@ -56,9 +56,18 @@ HTML::Template::Associate
 	    defaults => {
 		country => "Canada",
 	    },
+            msgs => {
+                prefix=> 'error_',
+                missing => 'Not Here!',
+                invalid => 'Problematic!',
+                invalid_seperator => ' <br /> ',
+                format => 'ERROR: %s',
+ 	        any_errors => 'some_errors',
+            }
+
   };
 
-  my $validator = HTML::FormValidator->new;
+  my $validator = Data::FormValidator->new;
   my $results = $validator->check ( scalar $cgi->Vars, $input_profile ); 
 
   my $associate = HTML::Template::Associate->new( {
@@ -98,11 +107,25 @@ HTML::Template::Associate
 
   I think <TMPL_VAR NAME=country> is very big country. 
 
+  <!-- Optional use of Data::FormValidator::Results msgs interface -->
+
+  Message Fields:
+
+  <TMPL_LOOP NAME=MSGS_FIELDS>
+      Field Name: <TMPL_VAR NAME=FIELD_NAME><br>
+      Field Value: <TMPL_VAR NAME=FIELD_VALUE><br>
+  </TMPL_LOOP>
+
+  <TMPL_IF NAME=MSGS_error_city>
+	Our default error message set in the profiling code is: <TMPL_VAR NAME=MSGS_error_city> 
+  </TMPL_IF>
+     
+
 =head1 DESCRIPTION
 
   HTML::Template::Associate bridges gap between HTML::Template and 
   other modules that can be used in conjunction with it to do something 
-  useful together, like for example HTML::FormValidator that can verify form inputs. 
+  useful together, like for example Data::FormValidator that can verify form inputs. 
   The primary reason I wrote this is that I needed something to bridge those two and 
   the thought of creating something more expandable came to mind.   
 
@@ -122,7 +145,7 @@ HTML::Template::Associate
 
 =head1 USAGE
 
-  #where $results = HTML::FormValidator::Results; for example
+  #where $results = Data::FormValidator::Results; for example
 
   my $associate = HTML::Template::Associate->new( {
         target => 'FormValidator',

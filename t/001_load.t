@@ -1,10 +1,10 @@
 # -*- perl -*-
 
-use Test::More tests => 7;
+use Test::More tests => 8;
 
 BEGIN { 
 	use_ok( q{HTML::Template::Associate} ); 
-        use_ok( q{HTML::FormValidator} ); 
+        use_ok( q{Data::FormValidator} ); 
 	use_ok( q{CGI} );
         use_ok( q{HTML::Template} );
 }
@@ -30,9 +30,17 @@ my $profile = {
             defaults => {
                 country => "Canada",
             },
+	    msgs => {
+                prefix=> 'error_',
+                missing => 'Not Here!',
+                invalid => 'Problematic!',
+                invalid_seperator => ' <br /> ',
+                format => 'ERROR: %s',
+                any_errors => 'some_errors',
+            }
 };
 
-my $validator = HTML::FormValidator->new;
+my $validator = Data::FormValidator->new;
 my $results = $validator->check ( scalar $cgi->Vars, $profile );
 
 my $associate = HTML::Template::Associate->new ( {
@@ -49,3 +57,4 @@ my $template = HTML::Template->new(
 
 ok ( $template->query( name => q{VALID_company} ) eq q{VAR}, q{Valid Company Field} ); 
 ok ( $template->query( name => q{VALID_phone} ) eq q{VAR}, q{Valid Phone Field} );
+ok ( $template->query( name => q{MSGS_error_city} ) eq q{VAR}, q{Message City Field});

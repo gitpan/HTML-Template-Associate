@@ -24,3 +24,17 @@
   <!-- We can also access our normal field names since $cgi object was passed as associate as well -->
 
   I think <TMPL_VAR NAME=country> is very big country.
+
+  <!-- Optional use of Data::FormValidator::Results msgs interface -->
+
+  Message Fields:
+
+  <TMPL_LOOP NAME=MSGS_FIELDS>
+      Field Name: <TMPL_VAR NAME=FIELD_NAME><br>
+      Field Value: <TMPL_VAR NAME=FIELD_VALUE><br>
+  </TMPL_LOOP>
+
+  <TMPL_IF NAME=MSGS_error_city>
+        Our default error message set in the profiling code is: <TMPL_VAR NAME=MSGS_error_city>
+  </TMPL_IF>
+

@@ -1,4 +1,4 @@
-#$Id: FormValidator.pm,v 1.9 2003/08/02 03:01:56 alex Exp $
+#$Id: FormValidator.pm,v 1.10 2003/08/04 03:01:56 alex Exp $
 
 package HTML::Template::Associate::FormValidator;
 use strict;
@@ -7,7 +7,7 @@ BEGIN {
 	use Exporter ();
         require HTML::Template::Associate;
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = qw ( $Revision: 1.9 $ )[1];
+	$VERSION     = qw ( $Revision: 1.10 $ )[1];
 	@ISA         = qw ( HTML::Template::Associate Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();
@@ -16,7 +16,7 @@ BEGIN {
 }
 
 use constant FIELD_HASH => q{PARAMS};
-use constant CHECK_TYPE => q{HTML::FormValidator::Results};
+use constant CHECK_TYPE => q{Data::FormValidator::Results};
 use constant ERROR_WRONG_TYPE => q{This class does not deal with that kind of result object}; 
 use constant ERROR_MISSING_FIELD => q{Field %s does not exist in the lookup table};
 
@@ -24,8 +24,9 @@ use constant TMPL_PREFIX_VALID => q{VALID_};
 use constant TMPL_PREFIX_MISSING => q{MISSING_};
 use constant TMPL_PREFIX_INVALID => q{INVALID_};
 use constant TMPL_PREFIX_UNKNOWN => q{UNKNOWN_};
-use constant TMPL_PREFIX_WARNINGS => q{WARNINGS_};
-use constant TMPL_PREFIX_CONFLICTS => q{CONFLICTS_};
+#use constant TMPL_PREFIX_WARNINGS => q{WARNINGS_};
+#use constant TMPL_PREFIX_CONFLICTS => q{CONFLICTS_};
+use constant TMPL_PREFIX_MSGS => q{MSGS_};
 
 use constant TMPL_POSTFIX_LOOP => q{FIELDS};
 
@@ -33,8 +34,9 @@ use constant METHOD_VALID => q{valid};
 use constant METHOD_MISSING => q{missing};
 use constant METHOD_INVALID => q{invalid};
 use constant METHOD_UNKNOWN => q{unknown};
-use constant METHOD_WARNINGS => q{warnings};
-use constant METHOD_CONFLICTS => q{conflicts}; 
+#use constant METHOD_WARNINGS => q{warnings};
+#use constant METHOD_CONFLICTS => q{conflicts}; 
+use constant METHOD_MSGS => q{msgs};
 
 use constant TMPL_LOOP_FIELDNAME => q{FIELD_NAME};
 use constant TMPL_LOOP_FIELDVALUE => q{FIELD_VALUE};
@@ -49,7 +51,7 @@ HTML::Template::Associate::FormValidator
 
   This class is not intended to be used directly but rather through a 
   HTML::Template::Associate. It provides concrete class functionality, it
-  will take HTML::FormValidator::Results object and reconstruct data structure
+  will take Data::FormValidator::Results object and reconstruct data structure
   to one appropriate for use by the HTML::Template. 
 
   The following will become available to your associate object/template:
@@ -62,17 +64,15 @@ HTML::Template::Associate::FormValidator
   MISSING_FIELDS   / $associate->param(q{MISSING_FIELDS});   / <TMPL_LOOP NAME=MISSING_FIELDS>   
   INVALID_FIELDS   / $associate->param(q{INVALID_FIELDS});   / <TMPL_LOOP NAME=INVALID_FIELDS>
   UNKNOWN_FIELDS   / $associate->param(q{UNKNOWN_FIELDS});   / <TMPL_LOOP NAME=UNKNOWN_FIELDS>
-  WARNINGS_FIELDS  / $associate->param(q{WARNINGS_FIELDS});  / <TMPL_LOOP NAME=WARNINGS_FIELDS>
-  CONFLICTS_FIELDS / $associate->param(q{CONFLICTS_FIELDS}); / <TMPL_LOOP NAME=CONFLICTS_FIELDS>              
+  MSGS_FIELDS      / $associate->param(q{MSGS_FIELDS});      / <TMPL_LOOP NAME=MSGS_FIELDS>
+  
   Variables  
 
-  VALID_ParamA     / $associate->param(q{VALID_ParamA});     / <TMPL_VAR NAME=VALID_ParamA>
-  MISSING_ParamB   / $associate->param(q{MISSING_ParamB});   / <TMPL_VAR NAME=MISSING_ParamB>
-  INVALID_ParamC   / $associate->param(q{INVALID_ParamC});   / <TMPL_VAR NAME=INVALID_ParamC>
-  UNKNOWN_ParamD   / $associate->param(q{UNKNOWN_ParamD});   / <TMPL_VAR NAME=UNKNOWN_ParamD>
-  WARNINGS_ParamE  / $associate->param(q{WARNINGS_ParamE});  / <TMPL_VAR NAME=WARNINGS_ParamE>
-  CONFLICTS_ParamF / $associate->param(q{CONFLICTS_ParamF}); / <TMPL_VAR NAME=CONFLICTS_ParamF> 
-   
+  VALID_ParamA       / $associate->param(q{VALID_ParamA});       / <TMPL_VAR NAME=VALID_ParamA>
+  MISSING_ParamB     / $associate->param(q{MISSING_ParamB});     / <TMPL_VAR NAME=MISSING_ParamB>
+  INVALID_ParamC     / $associate->param(q{INVALID_ParamC});     / <TMPL_VAR NAME=INVALID_ParamC>
+  UNKNOWN_ParamD     / $associate->param(q{UNKNOWN_ParamD});     / <TMPL_VAR NAME=UNKNOWN_ParamD>
+  MSGS_prefix_ParamE / $associate->param(q{MSGS_prefix_ParamE}); / <TMPL_VAR NAME=MSGS_prefix_ParamE> 
 
   Inside Array / Loops we have the following structure:
 
@@ -87,13 +87,15 @@ HTML::Template::Associate::FormValidator
         <TMPL_VAR NAME=FIELD_VALUE>     
   </TMPL_LOOP>   
 
-  For further explanation on what the VALID,MISSING,INVALID,UNKNOWN,WARNINGS and CONFLICTS are
-  please refer to HTML::FormValidator::Results.  
+  For further explanation on what the VALID,MISSING,INVALID,UNKNOWN AND MSGS are
+  please refer to Data::FormValidator::Results. Please note that MSGS 
+  works somewhat diffrently then others and corresponds to $results->msgs([$config])
+  interface.  
 
 
 =head1 DESCRIPTION
 
- Map HTML::FormValidator::Results object into a form suitable for use by HTML::Template
+ Map Data::FormValidator::Results object into a form suitable for use by HTML::Template
 
 =head1 USAGE
 
@@ -138,11 +140,11 @@ HTML::Template::Associate perl(1).
  Usage     : $associate->init ( $results, $extra_arguments );
  Purpose   : Initiliazes the object
  Returns   : concrete object instance
- Argument  : HTML::FormValidator::Results instance and extra hash of arguments passed to factory    
+ Argument  : Data::FormValidator::Results instance and extra hash of arguments passed to factory    
  Comments  : Factory class will call this method automatically during concrete object construction
            : Error is thrown depending whether the passed in results object is of correct type
 
-See Also   : HTML::Template::Associate HTML::FormValidator::Results  
+See Also   : HTML::Template::Associate Data::FormValidator::Results  
 
 =cut
 
@@ -157,8 +159,10 @@ sub init {
         $self->runloop ( $results, METHOD_MISSING, TMPL_PREFIX_MISSING ) if $results->has_missing; 
  	$self->runloop ( $results, METHOD_INVALID, TMPL_PREFIX_INVALID ) if $results->has_invalid;
         $self->runloop ( $results, METHOD_UNKNOWN, TMPL_PREFIX_UNKNOWN ) if $results->has_unknown;
-        $self->runloop ( $results, METHOD_WARNINGS, TMPL_PREFIX_WARNINGS ) if $results->has_warnings;
-        $self->runloop ( $results, METHOD_CONFLICTS, TMPL_PREFIX_CONFLICTS ) if $results->has_conflicts; 	return $self;                          
+        #$self->runloop ( $results, METHOD_WARNINGS, TMPL_PREFIX_WARNINGS ) if $results->has_warnings;
+        #$self->runloop ( $results, METHOD_CONFLICTS, TMPL_PREFIX_CONFLICTS ) if $results->has_conflicts; 
+	$self->runloop ( $results, METHOD_MSGS, TMPL_PREFIX_MSGS ) if keys %{$results->msgs};
+	return $self;                          
 }
 
 ################################################ subroutine header begin ##
@@ -171,7 +175,7 @@ sub init {
  Argument  : Field name to find and optional value to set for that field if field was to be found
  Comments  : This method is called by HTML::Template once associate object is passed to it
 
-See Also   : HTML::Template::Associate HTML::FormValidator::Results
+See Also   : HTML::Template::Associate Data::FormValidator::Results
 
 =cut
 
@@ -202,8 +206,11 @@ sub runloop {
 	     $results,		 
              $method, 
              $field_prefix ) = @_;
-	for my $field ( $results->$method ) {
-		my $field_value = $results->$method ( $field );
+	my @fields = ref $results->$method eq q{ARRAY} ? 
+		@{ $results->$method } : keys %{ $results->$method };	
+	for my $field ( @fields ) {
+		my $field_value = ref $results->$method eq q{ARRAY} ? 
+			$results->$method ( $field ) : $results->$method->{$field};
         	$self->param ( $field_prefix . $field, $field_value );
 		my $loop_name = $field_prefix . TMPL_POSTFIX_LOOP;
 		push @{ $self->{&FIELD_HASH}->{$loop_name} }, { 
