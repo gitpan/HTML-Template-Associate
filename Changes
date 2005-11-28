@@ -1,7 +1,10 @@
 Revision history for Perl module HTML::Template::Associate::FormValidator
 
+
 1.09 Wed Jul 30 16:59:16 2003
 	- original version; created by ExtUtils::ModuleMaker 0.32
 1.10 Mon Aug 05 18:00:00 2003 
 	- revised version; added support for Data::FormValidator::Results
+1.11 Mon Nov 28 12:00:00 2005
+	- fixed a minor issue with array value handling
 
