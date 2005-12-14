@@ -1,5 +1,3 @@
-#$Id: FormValidator.pm,v 1.11 2003/08/04 03:01:56 alex Exp $
-
 package HTML::Template::Associate::FormValidator;
 use strict;
 
@@ -7,7 +5,7 @@ BEGIN {
 	use Exporter ();
         require HTML::Template::Associate;
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = qw ( $Revision: 1.11 $ )[1];
+	$VERSION     = '1.13';
 	@ISA         = qw ( HTML::Template::Associate Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();
@@ -45,7 +43,7 @@ use constant TMPL_LOOP_FIELDVALUE => q{FIELD_VALUE};
 
 =head1 NAME
 
-HTML::Template::Associate::FormValidator  
+HTML::Template::Associate::FormValidator - HTML::Template::Associate Data::FormValidator plugin 
 
 =head1 SYNOPSIS
 

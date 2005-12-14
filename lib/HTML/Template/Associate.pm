@@ -1,12 +1,10 @@
-#$Id: Associate.pm,v 1.11 2003/08/04 03:01:55 alex Exp $
-
 package HTML::Template::Associate;
 use strict;
 
 BEGIN {
 	use Exporter ();
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = qw ( $Revision: 1.11 $ )[1];
+	$VERSION     = '1.13';
 	@ISA         = qw (Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();
@@ -23,7 +21,7 @@ use constant ERROR_SUB_INIT => q{Sub init not defined in your class, please prov
 
 =head1 NAME
 
-HTML::Template::Associate 
+HTML::Template::Associate - Associate relevant packages with HTML::Template 
 
 =head1 SYNOPSIS
 
@@ -132,7 +130,8 @@ HTML::Template::Associate
   The idea is that every associate object can map required data structure onto
   the one which corresponds to the one being documented publicly in the HTML::Template.
   The factory will then instantiate the target class and user can then make it available 
-  to HTML::Template via associate argument during object construction. The data structures   then become automatically visible to your templates.
+  to HTML::Template via associate argument during object construction. 
+  The data structures   then become automatically visible to your templates.
 
   This module is abstract class it provides no mapping functionality
   whatsoever, but rather defines common interface to all associate
@@ -141,7 +140,7 @@ HTML::Template::Associate
   You should however use this module whenever you wish to access a
   concrete associate class that provides functionality you desire.
 
-  I hope that with time more useful associate objects spring into existence.
+  I hope that with time more associate objects spring into existence.
 
 =head1 USAGE
 

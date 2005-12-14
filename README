@@ -1,190 +1,191 @@
-INSTALLATION
- 
-perl Makefile.PL
-make 
-make test
-make install
+HTML::Template::AssociaUtsee(r3)Contributed Perl DocumenHtTaMtLi:o:nTemplate::Associate(3)
 
 
-NAME
-    HTML::Template::Associate
 
-SYNOPSIS
-      #Example usage with CGI and FormValidator as the target 
+NNAAMMEE
+       HTML::Template::Associate - Associate relevant packages with HTML::Tem-
+       plate
 
-      use CGI qw/:standard/;
-      use Data::FormValidator;
-      use HTML::Template;
-      use HTML::Template::Associate;
+SSYYNNOOPPSSIISS
+         #Example usage with CGI and FormValidator as the target
 
-      my $cgi = CGI->new;
-      #for testing purposes we can add some input to our cgi object
-      $cgi->param( q{fullname}, q{John Doe} );
-      $cgi->param( q{phone}, 6041112222 );
-      $cgi->param( q{email}, q{invalid@email} );
-  
-      my $input_profile = {
-                optional     =>
-                    [ qw( company fax country ) ],
-                required     =>
-                    [ qw( fullname phone email address city state zipcode ) ],
-                constraints  =>
-                    {
-                        email       => "email",
-                        fax         => "american_phone",
-                        phone       => "american_phone",
-                        zipcode     => '/^\s*\d{5}(?:[-]\d{4})?\s*$/',
-                        state       => "state",
-                    },
-                defaults => {
-                    country => "Canada",
-                },
-                msgs => {
-                    prefix=> 'error_',
-                    missing => 'Not Here!',
-                    invalid => 'Problematic!',
-                    invalid_seperator => ' <br /> ',
-                    format => 'ERROR: %s',
-                    any_errors => 'some_errors',
-                }
+         use CGI qw/:standard/;
+         use Data::FormValidator;
+         use HTML::Template;
+         use HTML::Template::Associate;
 
-      };
+         my $cgi = CGI->new;
+         #for testing purposes we can add some input to our cgi object
+         $cgi->param( q{fullname}, q{John Doe} );
+         $cgi->param( q{phone}, 6041112222 );
+         $cgi->param( q{email}, q{invalid@email} );
 
-      my $validator = Data::FormValidator->new;
-      my $results = $validator->check ( scalar $cgi->Vars, $input_profile ); 
+         my $input_profile = {
+                   optional     =>
+                       [ qw( company fax country ) ],
+                   required     =>
+                       [ qw( fullname phone email address city state zipcode ) ],
+                   constraints  =>
+                       {
+                           email       => "email",
+                           fax         => "american_phone",
+                           phone       => "american_phone",
+                           zipcode     => '/^\s*\d{5}(?:[-]\d{4})?\s*$/',
+                           state       => "state",
+                       },
+                   defaults => {
+                       country => "Canada",
+                   },
+                   msgs => {
+                       prefix=> 'error_',
+                       missing => 'Not Here!',
+                       invalid => 'Problematic!',
+                       invalid_seperator => ' <br /> ',
+                       format => 'ERROR: %s',
+                       any_errors => 'some_errors',
+                   }
 
-      my $associate = HTML::Template::Associate->new( {
-            target => 'FormValidator', 
-            results => $results,
-            extra_arguments => [ $validator ] } ); #not needed but just illustrated
+         };
 
-      my $template = HTML::Template->new(
-            filename => 'test.tmpl', 
-            associate => [ $cgi, $associate ] );
+         my $validator = Data::FormValidator->new;
+         my $results = $validator->check ( scalar $cgi->Vars, $input_profile );
 
-      print $template->output;
+         my $associate = HTML::Template::Associate->new( {
+               target => 'FormValidator',
+               results => $results,
+               extra_arguments => [ $validator ] } ); #not needed but just illustrated
 
-      #and in our test.tmpl file we could have
-  
-      Valid Fields:<br>
-      <TMPL_LOOP NAME=VALID_FIELDS>
-          Field Name: <TMPL_VAR NAME=FIELD_NAME><br>
-          Field Value: <TMPL_VAR NAME=FIELD_VALUE><br> 
-      </TMPL_LOOP>
+         my $template = HTML::Template->new(
+               filename => 'test.tmpl',
+               associate => [ $cgi, $associate ] );
 
-      Missing Fields:<br>
-      <TMPL_LOOP NAME=MISSING_FIELDS>
-          Field Name: <TMPL_VAR NAME=FIELD_NAME><br>
-          Field Value: <TMPL_VAR NAME=FIELD_VALUE><br> 
-      </TMPL_LOOP>
+         print $template->output;
 
-      <TMPL_IF NAME=INVALID_phone>
-          Phone: <TMPL_VAR NAME="phone"> you supplied is invalid.           
-      </TMPL_IF>
+         #and in our test.tmpl file we could have
 
-      <TMPL_IF NAME=MISSING_city> 
-          City name is missing, please fix this.
-      </TMPL_IF>
+         Valid Fields:<br>
+         <TMPL_LOOP NAME=VALID_FIELDS>
+             Field Name: <TMPL_VAR NAME=FIELD_NAME><br>
+             Field Value: <TMPL_VAR NAME=FIELD_VALUE><br>
+         </TMPL_LOOP>
 
-      <!-- We can also access our normal field names since $cgi object was passed as associate as well -->
+         Missing Fields:<br>
+         <TMPL_LOOP NAME=MISSING_FIELDS>
+             Field Name: <TMPL_VAR NAME=FIELD_NAME><br>
+             Field Value: <TMPL_VAR NAME=FIELD_VALUE><br>
+         </TMPL_LOOP>
 
-      I think <TMPL_VAR NAME=country> is very big country. 
+         <TMPL_IF NAME=INVALID_phone>
+             Phone: <TMPL_VAR NAME="phone"> you supplied is invalid.
+         </TMPL_IF>
 
-      <!-- Optional use of Data::FormValidator::Results msgs interface -->
+         <TMPL_IF NAME=MISSING_city>
+             City name is missing, please fix this.
+         </TMPL_IF>
 
-      Message Fields:
+         <!-- We can also access our normal field names since $cgi object was passed as associate as well -->
 
-      <TMPL_LOOP NAME=MSGS_FIELDS>
-          Field Name: <TMPL_VAR NAME=FIELD_NAME><br>
-          Field Value: <TMPL_VAR NAME=FIELD_VALUE><br>
-      </TMPL_LOOP>
+         I think <TMPL_VAR NAME=country> is very big country.
 
-      <TMPL_IF NAME=MSGS_error_city>
-            Our default error message set in the profiling code is: <TMPL_VAR NAME=MSGS_error_city> 
-      </TMPL_IF>
-     
-DESCRIPTION
-      HTML::Template::Associate bridges gap between HTML::Template and 
-      other modules that can be used in conjunction with it to do something 
-      useful together, like for example Data::FormValidator that can verify form inputs. 
-      The primary reason I wrote this is that I needed something to bridge those two and 
-      the thought of creating something more expandable came to mind.   
+         <!-- Optional use of Data::FormValidator::Results msgs interface -->
 
-      The idea is that every associate object can map required data structure onto
-      the one which corresponds to the one being documented publicly in the HTML::Template.
-      The factory will then instantiate the target class and user can then make it available 
-      to HTML::Template via associate argument during object construction. The data structures   then become automatically visible to your templates.
+         Message Fields:
 
-      This module is abstract class it provides no mapping functionality
-      whatsoever, but rather defines common interface to all associate
-      objects underneath it and acts as a object production factory.
+         <TMPL_LOOP NAME=MSGS_FIELDS>
+             Field Name: <TMPL_VAR NAME=FIELD_NAME><br>
+             Field Value: <TMPL_VAR NAME=FIELD_VALUE><br>
+         </TMPL_LOOP>
 
-      You should however use this module whenever you wish to access a
-      concrete associate class that provides functionality you desire.
+         <TMPL_IF NAME=MSGS_error_city>
+               Our default error message set in the profiling code is: <TMPL_VAR NAME=MSGS_error_city>
+         </TMPL_IF>
 
-      I hope that with time more useful associate objects spring into existence.
+DDEESSCCRRIIPPTTIIOONN
+         HTML::Template::Associate bridges gap between HTML::Template and
+         other modules that can be used in conjunction with it to do something
+         useful together, like for example Data::FormValidator that can verify form inputs.
+         The primary reason I wrote this is that I needed something to bridge those two and
+         the thought of creating something more expandable came to mind.
 
-USAGE
-      #where $results = Data::FormValidator::Results; for example
+         The idea is that every associate object can map required data structure onto
+         the one which corresponds to the one being documented publicly in the HTML::Template.
+         The factory will then instantiate the target class and user can then make it available
+         to HTML::Template via associate argument during object construction.
+         The data structures   then become automatically visible to your templates.
 
-      my $associate = HTML::Template::Associate->new( {
-            target => 'FormValidator',
-            results => $results );
+         This module is abstract class it provides no mapping functionality
+         whatsoever, but rather defines common interface to all associate
+         objects underneath it and acts as a object production factory.
 
-      Target is always last portion of your full class name, so if
-      you had HTML::Template::Associate::XYZ the target would be XYZ
+         You should however use this module whenever you wish to access a
+         concrete associate class that provides functionality you desire.
 
-BUGS
-      Maybe. If you see any make sure you let me know.
+         I hope that with time more associate objects spring into existence.
 
-SUPPORT
-AUTHOR
-            Alex Pavlovic
-            alex@taskforce-1.com
-            http://www.taskforce-1.com
+UUSSAAGGEE
+         #where $results = Data::FormValidator::Results; for example
 
-COPYRIGHT
-    This program is free software; you can redistribute it and/or modify it
-    under the same terms as Perl itself.
+         my $associate = HTML::Template::Associate->new( {
+               target => 'FormValidator',
+               results => $results );
 
-    The full text of the license can be found in the LICENSE file included
-    with this module.
+         Target is always last portion of your full class name, so if
+         you had HTML::Template::Associate::XYZ the target would be XYZ
 
-SEE ALSO
-    HTML::Template::Associate::FormValidator perl(1).
+BBUUGGSS
+         Maybe. If you see any make sure you let me know.
 
-  new
+SSUUPPPPOORRTT
+AAUUTTHHOORR
+               Alex Pavlovic
+               alex@taskforce-1.com
+               http://www.taskforce-1.com
 
-     Usage     : my $associate = HTML::Template::Associate->new ( target => 'FormValidator', results => $results );
-     Purpose   : Constructs new associate object
-     Returns   : associate instance
-     Argument  : Hash of arguments ( target specifying object to be created, results specifying result set, optional extra_arguments specifying additional arguments to be passed inside target object )
-     Throws    : Error in case target does not exist
-     Comments  : Please note that target is always last portion of your full class name, so if you had HTML::Template::Associate::XYZ the target would be XYZ
+CCOOPPYYRRIIGGHHTT
+       This program is free software; you can redistribute it and/or modify it
+       under the same terms as Perl itself.
 
-  param
+       The full text of the license can be found in the LICENSE file included
+       with this module.
 
-     Usage     : my $MyParam = $associate->param(q{MyParam});
-     Purpose   : Retrieves param in a form suitable for access by HTML::Template
-     Returns   : Single param or arrays suitable for loops 
-     Argument  : Parameter name and optional value if setting it
-     Throws    : Error in case subroutine was not implemented in concrete class
-     Comments  : This subroutine should be redefined in concrete class
+SSEEEE AALLSSOO
+       HTML::Template::Associate::FormValidator _p_e_r_l(1).
 
-  init
+       nneeww
 
-     Usage     : $self->init ( $params );
-     Purpose   : Provides basic initiliazation for the target class
-     Returns   : true or false depending on whether initilization was succesful
-     Argument  : hash of parameters passed to factory during object construction
-     Throws    : Error in case subroutine was not implemented in concrete class
-     Comments  : This subroutine should be redefined in concrete class
+        Usage     : my $associate = HTML::Template::Associate->new ( target => 'FormValidator', results => $results );
+        Purpose   : Constructs new associate object
+        Returns   : associate instance
+        Argument  : Hash of arguments ( target specifying object to be created, results specifying result set, optional extra_arguments specifying additional arguments to be passed inside target object )
+        Throws    : Error in case target does not exist
+        Comments  : Please note that target is always last portion of your full class name, so if you had HTML::Template::Associate::XYZ the target would be XYZ
 
-  log
+       ppaarraamm
 
-     Purpose   : Used internally to warn errors
+        Usage     : my $MyParam = $associate->param(q{MyParam});
+        Purpose   : Retrieves param in a form suitable for access by HTML::Template
+        Returns   : Single param or arrays suitable for loops
+        Argument  : Parameter name and optional value if setting it
+        Throws    : Error in case subroutine was not implemented in concrete class
+        Comments  : This subroutine should be redefined in concrete class
 
-  error
+       iinniitt
 
-     Purpose   : Used internally to die on errors                                 
+        Usage     : $self->init ( $params );
+        Purpose   : Provides basic initiliazation for the target class
+        Returns   : true or false depending on whether initilization was succesful
+        Argument  : hash of parameters passed to factory during object construction
+        Throws    : Error in case subroutine was not implemented in concrete class
+        Comments  : This subroutine should be redefined in concrete class
 
+       lloogg
+
+        Purpose   : Used internally to warn errors
+
+       eerrrroorr
+
+        Purpose   : Used internally to die on errors
+
+
+
+perl v5.8.7                       2005-12-14      HTML::Template::Associate(3)
