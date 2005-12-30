@@ -4,7 +4,7 @@ use strict;
 BEGIN {
 	use Exporter ();
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = '1.13';
+	$VERSION     = '1.14';
 	@ISA         = qw (Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();
@@ -199,7 +199,6 @@ HTML::Template::Associate::FormValidator perl(1).
 
 ################################################## subroutine header end ##
 
-
 sub new {
         shift;
         my $params = shift;
@@ -249,7 +248,6 @@ sub param { carp ERROR_SUB_PARAM };
 sub init { carp ERROR_SUB_INIT };
 
 
-
 ################################################ subroutine header begin ##
 
 =head2 log
@@ -275,7 +273,5 @@ sub log   { shift; carp @_ }
 
 sub error { shift; croak @_ }
 
-
 1; #this line is important and will help the module return a true value
 __END__
-

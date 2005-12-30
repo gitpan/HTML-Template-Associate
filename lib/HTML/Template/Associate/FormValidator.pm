@@ -3,9 +3,9 @@ use strict;
 
 BEGIN {
 	use Exporter ();
-        require HTML::Template::Associate;
+	require HTML::Template::Associate;
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = '1.13';
+	$VERSION     = '1.14';
 	@ISA         = qw ( HTML::Template::Associate Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();
@@ -17,25 +17,17 @@ use constant FIELD_HASH => q{PARAMS};
 use constant CHECK_TYPE => q{Data::FormValidator::Results};
 use constant ERROR_WRONG_TYPE => q{This class does not deal with that kind of result object}; 
 use constant ERROR_MISSING_FIELD => q{Field %s does not exist in the lookup table};
-
 use constant TMPL_PREFIX_VALID => q{VALID_};
 use constant TMPL_PREFIX_MISSING => q{MISSING_};
 use constant TMPL_PREFIX_INVALID => q{INVALID_};
 use constant TMPL_PREFIX_UNKNOWN => q{UNKNOWN_};
-#use constant TMPL_PREFIX_WARNINGS => q{WARNINGS_};
-#use constant TMPL_PREFIX_CONFLICTS => q{CONFLICTS_};
 use constant TMPL_PREFIX_MSGS => q{MSGS_};
-
 use constant TMPL_POSTFIX_LOOP => q{FIELDS};
-
 use constant METHOD_VALID => q{valid};
 use constant METHOD_MISSING => q{missing};
 use constant METHOD_INVALID => q{invalid};
 use constant METHOD_UNKNOWN => q{unknown};
-#use constant METHOD_WARNINGS => q{warnings};
-#use constant METHOD_CONFLICTS => q{conflicts}; 
 use constant METHOD_MSGS => q{msgs};
-
 use constant TMPL_LOOP_FIELDNAME => q{FIELD_NAME};
 use constant TMPL_LOOP_FIELDVALUE => q{FIELD_VALUE};
 
@@ -153,12 +145,10 @@ sub init {
 	my ( $self, $params ) = @_;
 	my $results = $params->{results};
 	error ( ERROR_WRONG_TYPE ) unless $results->isa(CHECK_TYPE);  
-        $self->runloop ( $results, METHOD_VALID, TMPL_PREFIX_VALID );
-        $self->runloop ( $results, METHOD_MISSING, TMPL_PREFIX_MISSING ) if $results->has_missing; 
+	$self->runloop ( $results, METHOD_VALID, TMPL_PREFIX_VALID );
+	$self->runloop ( $results, METHOD_MISSING, TMPL_PREFIX_MISSING ) if $results->has_missing; 
  	$self->runloop ( $results, METHOD_INVALID, TMPL_PREFIX_INVALID ) if $results->has_invalid;
-        $self->runloop ( $results, METHOD_UNKNOWN, TMPL_PREFIX_UNKNOWN ) if $results->has_unknown;
-        #$self->runloop ( $results, METHOD_WARNINGS, TMPL_PREFIX_WARNINGS ) if $results->has_warnings;
-        #$self->runloop ( $results, METHOD_CONFLICTS, TMPL_PREFIX_CONFLICTS ) if $results->has_conflicts; 
+	$self->runloop ( $results, METHOD_UNKNOWN, TMPL_PREFIX_UNKNOWN ) if $results->has_unknown;
 	$self->runloop ( $results, METHOD_MSGS, TMPL_PREFIX_MSGS ) if keys %{$results->msgs};
 	return $self;                          
 }
@@ -180,12 +170,10 @@ See Also   : HTML::Template::Associate Data::FormValidator::Results
 ################################################## subroutine header end ##
 
 sub param {
-	my ( $self, 
-	     $field, 
-             $value ) = @_;
-        $self->{&FIELD_HASH}->{$field} = $value if $value;
+	my ( $self, $field, $value ) = @_;
+	$self->{&FIELD_HASH}->{$field} = $value if defined $value;
 	return keys %{ $self->{&FIELD_HASH} } unless $field;
-        $self->SUPER::log ( sprintf ( ERROR_MISSING_FIELD, $field ) ) unless exists $self->{&FIELD_HASH}->{$field};
+	$self->SUPER::log ( sprintf ( ERROR_MISSING_FIELD, $field ) ) unless exists $self->{&FIELD_HASH}->{$field};
 	return $self->{&FIELD_HASH}->{$field};
 }
 
@@ -200,27 +188,25 @@ sub param {
 ################################################## subroutine header end ##
 
 sub runloop {
-	my ( $self,
-	     $results,		 
-             $method, 
-             $field_prefix ) = @_;
+	my ( $self, $results, $method, $field_prefix ) = @_;
 	my @fields = ref $results->$method eq q{ARRAY} ? 
 		@{ $results->$method } : keys %{ $results->$method };	
 	for my $field ( @fields ) {
 		my $field_value = ref $results->$method eq q{ARRAY} ? 
 			$results->$method ( $field ) : $results->$method->{$field};
+			
 		$field_value = ref $field_value eq q{ARRAY} ? 
 			join q{,}, @$field_value : $field_value;
-        	$self->param ( $field_prefix . $field, $field_value );
+			
+       	$self->param ( $field_prefix . $field, $field_value );
 		my $loop_name = $field_prefix . TMPL_POSTFIX_LOOP;
 		push @{ $self->{&FIELD_HASH}->{$loop_name} }, { 
 			&TMPL_LOOP_FIELDNAME => $field,
 			&TMPL_LOOP_FIELDVALUE => $field_value 
-                };   
+		};   
 	}
 	return $self;
 }
 
 1; #this line is important and will help the module return a true value
 __END__
-
