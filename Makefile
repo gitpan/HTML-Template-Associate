@@ -54,11 +54,11 @@ DIRFILESEP = /
 DFSEP = $(DIRFILESEP)
 NAME = HTML::Template::Associate
 NAME_SYM = HTML_Template_Associate
-VERSION = 1.13
+VERSION = 1.14
 VERSION_MACRO = VERSION
-VERSION_SYM = 1_13
+VERSION_SYM = 1_14
 DEFINE_VERSION = -D$(VERSION_MACRO)=\"$(VERSION)\"
-XS_VERSION = 1.13
+XS_VERSION = 1.14
 XS_VERSION_MACRO = XS_VERSION
 XS_DEFINE_VERSION = -D$(XS_VERSION_MACRO)=\"$(XS_VERSION)\"
 INST_ARCHLIB = blib/arch
@@ -252,7 +252,7 @@ RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
 DIST_CP = best
 DIST_DEFAULT = tardist
 DISTNAME = HTML-Template-Associate
-DISTVNAME = HTML-Template-Associate-1.13
+DISTVNAME = HTML-Template-Associate-1.14
 
 
 # --- MakeMaker macro section:
@@ -481,7 +481,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '# http://module-build.sourceforge.net/META-spec.html' > META_new.yml
 	$(NOECHO) $(ECHO) '#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#' >> META_new.yml
 	$(NOECHO) $(ECHO) 'name:         HTML-Template-Associate' >> META_new.yml
-	$(NOECHO) $(ECHO) 'version:      1.13' >> META_new.yml
+	$(NOECHO) $(ECHO) 'version:      1.14' >> META_new.yml
 	$(NOECHO) $(ECHO) 'version_from: lib/HTML/Template/Associate.pm' >> META_new.yml
 	$(NOECHO) $(ECHO) 'installdirs:  site' >> META_new.yml
 	$(NOECHO) $(ECHO) 'requires:' >> META_new.yml
@@ -778,7 +778,7 @@ testdb_static :: testdb_dynamic
 # --- MakeMaker ppd section:
 # Creates a PPD (Perl Package Description) for a binary distribution.
 ppd:
-	$(NOECHO) $(ECHO) '<SOFTPKG NAME="$(DISTNAME)" VERSION="1,13,0,0">' > $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '<SOFTPKG NAME="$(DISTNAME)" VERSION="1,14,0,0">' > $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <TITLE>$(DISTNAME)</TITLE>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <ABSTRACT></ABSTRACT>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <AUTHOR>Alex Pavlovic (alex@taskforce-1.com)</AUTHOR>' >> $(DISTNAME).ppd

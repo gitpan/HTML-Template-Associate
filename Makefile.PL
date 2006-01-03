@@ -4,9 +4,9 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME         => 'HTML::Template::Associate',
     VERSION_FROM => 'lib/HTML/Template/Associate.pm', # finds $VERSION
-    AUTHOR       => 'Alex Pavlovic (alex@taskforce-1.com)',
+    AUTHOR       => 'Alex Pavlovic (alex.pavlovic@taskforce-1.com)',
     ABSTRACT     => '',
     PREREQ_PM    => {
-                     'Test::Simple' => 0.44, 'Data::FormValidator', 'HTML::Template', 'CGI', 'Test::More', 'DBI' 
+                     'Test::Simple' => 0.44, 'Data::FormValidator', 'HTML::Template', 'CGI', 'Test::More' 
                     },
 );

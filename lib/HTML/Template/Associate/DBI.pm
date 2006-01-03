@@ -5,7 +5,7 @@ BEGIN {
 	use Exporter ();
 	require HTML::Template::Associate;
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = '1.14';
+	$VERSION     = '1.15';
 	@ISA         = qw ( HTML::Template::Associate Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();
@@ -38,7 +38,14 @@ HTML::Template::Associate::DBI - HTML::Template::Associate DBI plugin
 		{},
 		$baz
 	);
-	
+			
+	my $results_bar = $dbh->selectall_hashref ( 
+		'SELECT foo, bar FROM bar WHERE baz = ?',
+		[ 'foo_id', 'bar_id' ] ,
+		{},
+		$baz
+	);
+
 	my $results_moo = $dbh->selectrow_hashref ( 'SELECT x, y FROM z LIMIT 1' );
 	
 	my $associate = HTML::Template::Associate->new( {
@@ -47,7 +54,11 @@ HTML::Template::Associate::DBI - HTML::Template::Associate DBI plugin
 				results => $results_foo,
 				name => 'my_loop',
 				type => 'selectall_hashref'
-			},  {
+			}, {
+				results => $results_bar,
+				name => 'my_other_loop',
+				type => 'selectall_hashref'
+			}, {
 				results => $results_moo,
 				type => 'selectrow_hashref',
 				name => 'my_params'
@@ -64,9 +75,16 @@ HTML::Template::Associate::DBI - HTML::Template::Associate DBI plugin
 	print $template->output();
 
 	#sample.tmpl
+	
 	<!-- TMPL_LOOP NAME="my_loop" -->
 		Foo is:<!-- TMPL_VAR NAME="foo" -->
 	<!-- /TMPL_LOOP -->
+	
+	<!-- TMPL_LOOP NAME="my_other_loop" -->
+		Foo is:<!-- TMPL_VAR NAME="foo" --> 
+		Bar is:<!-- TMPL_VAR NAME="bar" -->
+	<!-- /TMPL_LOOP -->	
+	
 	x is:<!-- TMPL_VAR NAME="my_params.x" -->
 	y is:<!-- TMPL_VAR NAME="my_params.y" -->
 
@@ -123,7 +141,24 @@ Transform using selectall_hashref return format.
 
 sub init_selectall_hashref {
 	my ( $self, $results, $param_name ) = @_;
-	$self->param ( $param_name, [ values %$results ] );
+	my $values = [];
+	$self->selectall_hashref_build ( $results, $values );
+	$self->param ( $param_name, $values );	
+}
+
+sub selectall_hashref_build {
+	my ( $self, $results, $values ) = @_;
+	for ( keys %$results ) {
+		if ( ref $results->{$_} eq 'HASH' ) {
+			$self->selectall_hashref_build (
+				$results->{$_},
+				$values,
+			);
+		} else {
+			push @$values, $results;
+			last;
+		}
+ 	}
 }
 
 =item init_selectrow_hashref
@@ -138,7 +173,6 @@ sub init_selectrow_hashref {
 		$self->param ( $param_name . '.' . $_, $results->{$_} );
 	}
 }
-
 
 =item param
 
