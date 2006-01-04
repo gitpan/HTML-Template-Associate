@@ -4,7 +4,7 @@ use strict;
 BEGIN {
 	use Exporter ();
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = '1.16';
+	$VERSION     = '1.14';
 	@ISA         = qw (Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();
@@ -101,8 +101,7 @@ HTML::Template::Associate - Associate relevant packages with HTML::Template
       City name is missing, please fix this.
   </TMPL_IF>
 
-  <!-- We can also access our normal field names 
-  	since $cgi object was passed as associate as well -->
+  <!-- We can also access our normal field names since $cgi object was passed as associate as well -->
 
   I think <TMPL_VAR NAME=country> is very big country. 
 
@@ -116,8 +115,7 @@ HTML::Template::Associate - Associate relevant packages with HTML::Template
   </TMPL_LOOP>
 
   <TMPL_IF NAME=MSGS_error_city>
-	Our default error message set in the profiling code is: 
-		<TMPL_VAR NAME=MSGS_error_city> 
+	Our default error message set in the profiling code is: <TMPL_VAR NAME=MSGS_error_city> 
   </TMPL_IF>
      
 
@@ -125,21 +123,24 @@ HTML::Template::Associate - Associate relevant packages with HTML::Template
 
   HTML::Template::Associate bridges gap between HTML::Template and 
   other modules that can be used in conjunction with it to do something 
-  useful together, like for example Data::FormValidator that can verify 
-  form inputs. 
+  useful together, like for example Data::FormValidator that can verify form inputs. 
+  The primary reason I wrote this is that I needed something to bridge those two and 
+  the thought of creating something more expandable came to mind.   
 
-  The idea is that every associate object can map required data structure 
-  onto the one which corresponds to the one found in HTML::Template.
-  The factory will then instantiate the target class and user can then make 
-  it available to HTML::Template via associate argument during object 
-  construction. The data structures then become automatically visible to 
-  your templates.
+  The idea is that every associate object can map required data structure onto
+  the one which corresponds to the one being documented publicly in the HTML::Template.
+  The factory will then instantiate the target class and user can then make it available 
+  to HTML::Template via associate argument during object construction. 
+  The data structures   then become automatically visible to your templates.
 
   This module is abstract class it provides no mapping functionality
   whatsoever, but rather defines common interface to all associate
   objects underneath it and acts as a object production factory.
+
   You should however use this module whenever you wish to access a
   concrete associate class that provides functionality you desire.
+
+  I hope that with time more associate objects spring into existence.
 
 =head1 USAGE
 
@@ -257,7 +258,7 @@ sub init { carp ERROR_SUB_INIT };
 
 ################################################## subroutine header end ##
 
-sub log { shift; carp @_ }
+sub log   { shift; carp @_ }
 
 
 ################################################ subroutine header begin ##
