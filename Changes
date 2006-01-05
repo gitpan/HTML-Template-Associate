@@ -10,3 +10,11 @@ Revision history for Perl modules HTML::Template::Associate and HTML::Template::
 	- updated POD
 1.13 Wed Dec 14 15:00:00 2005
 	- minor POD change
+1.14 Mon Dec 18 12:00:00 2005
+	- minor internal changes
+1.15 Fri Dec 29 14:00:00 2005
+	- minor POD changes
+1.16 Sun Dec 31 12:00:00 2005 
+	- added HTML::Template::Associate::DBI
+1.17 Thu Jan 06 12:00:00 2006
+	- fixed a few bugs

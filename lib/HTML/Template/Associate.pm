@@ -4,7 +4,7 @@ use strict;
 BEGIN {
 	use Exporter ();
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = '1.16';
+	$VERSION     = '1.17';
 	@ISA         = qw (Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();
@@ -176,7 +176,7 @@ LICENSE file included with this module.
 
 =head1 SEE ALSO
 
-HTML::Template::Associate::FormValidator perl(1).
+HTML::Template::Associate::FormValidator HTML::Template::Associate::DBI perl(1).
 
 =cut
 

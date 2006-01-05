@@ -148,7 +148,8 @@ CCOOPPYYRRIIGGHHTT
        with this module.
 
 SSEEEE AALLSSOO
-       HTML::Template::Associate::FormValidator _p_e_r_l(1).
+       HTML::Template::Associate::FormValidator HTML::Template::Associate::DBI
+       _p_e_r_l(1).
 
        nneeww
 
@@ -187,4 +188,4 @@ SSEEEE AALLSSOO
 
 
 
-perl v5.8.7                       2006-01-04      HTML::Template::Associate(3)
+perl v5.8.7                       2006-01-05      HTML::Template::Associate(3)

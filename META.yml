@@ -1,0 +1,13 @@
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         HTML-Template-Associate
+version:      1.17
+version_from: lib/HTML/Template/Associate.pm
+installdirs:  site
+requires:
+    CGI:                           Test::More
+    Data::FormValidator:           HTML::Template
+    Test::Simple:                  0.44
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.17
