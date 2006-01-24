@@ -6,7 +6,7 @@ BEGIN {
 	use Storable qw ( dclone );
 	require HTML::Template::Associate;
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = '1.17';
+	$VERSION     = '1.18';
 	@ISA         = qw ( HTML::Template::Associate Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();
@@ -14,25 +14,26 @@ BEGIN {
 	%EXPORT_TAGS = ();
 }
 
-use constant METHOD_TYPE_SELECTALL_HASHREF => q{selectall_hashref};
-use constant METHOD_TYPE_SELECTROW_HASHREF => q{selectrow_hashref};
-use constant METHOD_TYPE_FETCHALL_HASHREF => q{fetchall_hashref};
-use constant METHOD_TYPE_FETCHROW_HASHREF => q{fetchrow_hashref};
-use constant METHOD_TYPE_SELECTALL_ARRAYREF => q{selectall_arrayref};
-use constant METHOD_TYPE_SELECTCOL_ARRAYREF => q{selectcol_arrayref};
-use constant METHOD_TYPE_SELECTROW_ARRAY => q{selectrow_array};
-use constant METHOD_TYPE_SELECTROW_ARRAYREF => q{selectrow_arrayref};
-use constant METHOD_TYPE_FETCHROW_ARRAY => q{fetchrow_array};
-use constant METHOD_TYPE_FETCHROW_ARRAYREF => q{fetchrow_arrayref};
-use constant METHOD_TYPE_FETCHALL_ARRAYREF => q{fetchall_arrayref};
-use constant FIELD_HASH => q{PARAMS};
-use constant ERROR_MISSING_FIELD => q{Field %s does not exist in the lookup table};
+use constant METHOD_TYPE_SELECTALL_HASHREF => 'selectall_hashref';
+use constant METHOD_TYPE_SELECTROW_HASHREF => 'selectrow_hashref';
+use constant METHOD_TYPE_FETCHALL_HASHREF => 'fetchall_hashref';
+use constant METHOD_TYPE_FETCHROW_HASHREF => 'fetchrow_hashref';
+use constant METHOD_TYPE_SELECTALL_ARRAYREF => 'selectall_arrayref';
+use constant METHOD_TYPE_SELECTCOL_ARRAYREF => 'selectcol_arrayref';
+use constant METHOD_TYPE_SELECTROW_ARRAY => 'selectrow_array';
+use constant METHOD_TYPE_SELECTROW_ARRAYREF => 'selectrow_arrayref';
+use constant METHOD_TYPE_FETCHROW_ARRAY => 'fetchrow_array';
+use constant METHOD_TYPE_FETCHROW_ARRAYREF => 'fetchrow_arrayref';
+use constant METHOD_TYPE_FETCHALL_ARRAYREF => 'fetchall_arrayref';
 
 =head1 NAME
 
 HTML::Template::Associate::DBI - HTML::Template::Associate DBI plugin 
 
 =head1 SYNOPSIS
+
+	This class is not intended to be used directly but rather through a 
+	HTML::Template::Associate. It provides concrete class functionality.
 
 	use DBI;	
 	use HTML::Template;
@@ -227,20 +228,6 @@ sub init_selectcol_arrayref {
 	for ( 0 .. ( scalar ( @$results ) - 1 ) ) {
 		$self->param ( "$param_name." . $_, $results->[$_] );
 	}
-}
-
-=item param
-
-Store param.
-
-=cut
-
-sub param {
-	my ( $self, $field, $value ) = @_;
-	$self->{&FIELD_HASH}->{$field} = $value if defined $value;
-	return keys %{ $self->{&FIELD_HASH} } unless $field;
-	$self->SUPER::log ( sprintf ( ERROR_MISSING_FIELD, $field ) ) unless exists $self->{&FIELD_HASH}->{$field};
-	return $self->{&FIELD_HASH}->{$field};
 }
 
 sub selectall_hashref_build {

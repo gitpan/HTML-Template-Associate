@@ -17,4 +17,6 @@ Revision history for Perl modules HTML::Template::Associate and HTML::Template::
 1.16 Sun Dec 31 12:00:00 2005 
 	- added HTML::Template::Associate::DBI
 1.17 Thu Jan 06 12:00:00 2006
-	- fixed a few bugs
+	- fixed a few issues
+1.18 Mon Jan 23 12:00:00 2006
+	- fixed a few issues and updated docs
