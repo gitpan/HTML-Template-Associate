@@ -6,7 +6,7 @@ BEGIN {
 	use Storable qw ( dclone );
 	require HTML::Template::Associate;
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = '1.18';
+	$VERSION     = '1.19';
 	@ISA         = qw ( HTML::Template::Associate Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();
@@ -274,7 +274,7 @@ sub copy_structure {
 
 =head1 SEE ALSO
 
-	L<HTML::Template::Associate>, L<DBI> perl(1).
+	HTML::Template::Associate HTML::Template::Associate::FormValidator perl(1).
 
 =cut
 

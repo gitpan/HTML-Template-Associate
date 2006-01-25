@@ -5,7 +5,7 @@ BEGIN {
 	use Exporter ();
 	require HTML::Template::Associate;
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = '1.18';
+	$VERSION     = '1.19';
 	@ISA         = qw ( HTML::Template::Associate Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();
@@ -202,7 +202,7 @@ use constant TMPL_LOOP_FIELDVALUE => 'FIELD_VALUE';
 
 =head1 SEE ALSO
 
-	HTML::Template::Associate perl(1).
+	HTML::Template::Associate HTML::Template::Associate::DBI perl(1).
 
 =cut
 
@@ -230,7 +230,7 @@ use constant TMPL_LOOP_FIELDVALUE => 'FIELD_VALUE';
 sub init {
 	my ( $self, $params ) = @_;
 	my $results = $params->{results};
-	error ( ERROR_WRONG_TYPE ) unless $results->isa(CHECK_TYPE);  
+	$self->error ( ERROR_WRONG_TYPE ) unless $results->isa(CHECK_TYPE);  
 	$self->runloop ( $results, METHOD_VALID, TMPL_PREFIX_VALID );
 	$self->runloop ( $results, METHOD_MISSING, TMPL_PREFIX_MISSING ) if $results->has_missing; 
  	$self->runloop ( $results, METHOD_INVALID, TMPL_PREFIX_INVALID ) if $results->has_invalid;

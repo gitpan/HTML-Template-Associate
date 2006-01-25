@@ -4,7 +4,7 @@ use strict;
 BEGIN {
 	use Exporter ();
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = '1.18';
+	$VERSION     = '1.19';
 	@ISA         = qw (Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();
@@ -12,11 +12,9 @@ BEGIN {
 	%EXPORT_TAGS = ();
 }
 
-use Carp;
 use constant ERROR_OBJECT_CREATE => 'Cannot create %s target, make sure this class exists';
-use constant ERROR_SUB_INIT => 'Sub init not defined in your class, please provide concrete implementation for it';
+use constant ERROR_SUB_INIT => 'Sub init not defined in your target class, please provide concrete implementation for it';
 use constant FIELD_HASH => 'PARAMS';
-use constant ERROR_MISSING_FIELD => 'Field %s does not exist in the lookup table';
 
 ########################################### main pod documentation begin ##
 
@@ -292,9 +290,8 @@ sub new {
 
 sub param {
 	my ( $self, $field, $value ) = @_;
-	$self->{&FIELD_HASH}->{$field} = $value;
+	$self->{&FIELD_HASH}->{$field} = $value if $value;
 	return keys %{ $self->{&FIELD_HASH} } unless $field;
-	$self->SUPER::log ( sprintf ( ERROR_MISSING_FIELD, $field ) ) unless exists $self->{&FIELD_HASH}->{$field};
 	return $self->{&FIELD_HASH}->{$field};
 }
 
@@ -314,20 +311,7 @@ sub param {
 ################################################## subroutine header end ##
 
 
-sub init { carp ERROR_SUB_INIT };
-
-
-################################################ subroutine header begin ##
-
-=head2 log
-
-	Purpose   : Used internally to warn errors
-
-=cut
-
-################################################## subroutine header end ##
-
-sub log { shift; carp @_ }
+sub init { warn ERROR_SUB_INIT };
 
 
 ################################################ subroutine header begin ##
@@ -340,7 +324,7 @@ sub log { shift; carp @_ }
 
 ################################################## subroutine header end ##
 
-sub error { shift; croak @_ }
+sub error { shift; die @_ }
 
 1; 
 

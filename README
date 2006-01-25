@@ -243,10 +243,6 @@ SSEEEE AALLSSOO
                Throws    : Error in case subroutine was not implemented in concrete class
                Comments  : This subroutine should be redefined in concrete class
 
-       lloogg
-
-               Purpose   : Used internally to warn errors
-
        eerrrroorr
 
                Purpose   : Used internally to die on errors
