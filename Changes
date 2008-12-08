@@ -20,3 +20,5 @@ Revision history for Perl modules HTML::Template::Associate and HTML::Template::
 	- fixed a few issues
 1.18 Mon Jan 23 12:00:00 2006
 	- fixed a few issues and updated docs
+2.00 Sun Dec 07 18:00:00 2008
+	- Resolving http://rt.cpan.org/Ticket/Display.html?id=4338
