@@ -5,7 +5,7 @@ BEGIN {
 	use Exporter ();
 	require HTML::Template::Associate;
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = '2.00';
+	$VERSION     = '2.01';
 	@ISA         = qw ( HTML::Template::Associate Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();

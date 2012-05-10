@@ -7,6 +7,10 @@ WriteMakefile(
     AUTHOR       => 'Alex Pavlovic (alex.pavlovic@taskforce-1.com)',
     ABSTRACT     => '',
     PREREQ_PM    => {
-	'Test::Simple' => 0.44, 'Data::FormValidator', 'HTML::Template', 'CGI', 'Test::More' 
+	'Test::Simple' => 0.44,
+        'Data::FormValidator' => 0,
+        'HTML::Template' => 0,
+        'CGI' => 0,
+        'Test::More' => 0
     },
 );
